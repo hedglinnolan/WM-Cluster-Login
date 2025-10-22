@@ -11,7 +11,6 @@ This README packages everything you need to run **Jupyter Lab on the Astral clus
 - `Connect-Astral.ps1` — Windows helper to log in to Astral (via bastion)
 - `ssh_config_sample.txt` — Optional SSH config to stop re‑typing your username
 
-> If you haven’t yet, download these files from ChatGPT and keep them together locally.
 
 ---
 
