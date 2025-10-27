@@ -9,29 +9,24 @@ This README packages everything you need to run **Jupyter Lab on the Astral clus
 - `wm-jupy-gpu.yml` — (Optional) GPU environment spec for Astral’s A30 node
 - `launch_jupyter_astral.sh` — Remote script to request a Slurm node and start Jupyter
 - `Open-AstralJupyterTunnel.cmd` — Windows helper to open the SSH tunnel to Jupyter
-- `Connect-Astral.ps1` — Windows helper to log in to Astral (via bastion)
-  > If your organization blocks `.ps1` files, use `Connect-Astral.cmd` instead.
+- `Connect-Astral.cmd` — Windows helper to log in to Astral (via bastion)
 - `ssh_config_sample.txt` — Optional SSH config to stop re‑typing your username
 
-> If you haven’t yet, download these files from ChatGPT and keep them together locally.
 
 ---
 
 ## First‑Time Setup
 
 ### 1) Log in to Astral (off‑campus) from Windows
-Open **PowerShell** and run:
+Open **PowerShell** in your local project directory and run:
 ```powershell
 # If PowerShell scripts are allowed:
-.\Connect-Astral.ps1 -User YOUR_NETID
-
-# If blocked by execution policy, use the .cmd instead:
 .\Connect-Astral.cmd YOUR_NETID
 ```
 This uses the bastion jump host under the hood. You’ll approve Duo and land on `astral.sciclone.wm.edu`.
 
 ### 2) Copy the env + launch script to Astral
-In another PowerShell window (on your PC), from the directory where you downloaded these files:
+In another PowerShell window (on your PC), from your local working directory:
 ```powershell
 scp -J YOUR_NETID@bastion.wm.edu `
     .\wm-jupy.yml .\wm-jupy-gpu.yml .\launch_jupyter_astral.sh `
@@ -98,8 +93,7 @@ from myproj.utils import some_helper
 ### A) Start Jupyter on a compute node (Astral)
 1. Log in:
    ```powershell
-   # .ps1 (if allowed):   .\Connect-Astral.ps1 -User YOUR_NETID
-   # or .cmd:             .\Connect-Astral.cmd YOUR_NETID
+   #  .cmd:             .\Connect-Astral.cmd YOUR_NETID
    ```
 2. On Astral, run the launcher (choose CPUs/GPU/time as needed):
    ```bash
@@ -129,7 +123,7 @@ http://127.0.0.1:8890/lab?token=...
 ```
 
 ### C) Stop re‑typing your username (optional)
-Edit `Open-AstralJupyterTunnel.cmd`/`Connect-Astral.ps1` to set your default NetID, **or** save `ssh_config_sample.txt` as `C:\Users\<you>\.ssh\config`. Then you can:
+Edit `Open-AstralJupyterTunnel.cmd` to set your default NetID, **or** save `ssh_config_sample.txt` as `C:\Users\<you>\.ssh\config`. Then you can:
 ```powershell
 ssh wm-astral
 ssh -N -L 8890:as01.sciclone.wm.edu:8890 wm-astral
@@ -148,10 +142,6 @@ ssh -N -L 8890:as01.sciclone.wm.edu:8890 wm-astral
 
 ## Troubleshooting
 
-- **PowerShell blocked .ps1**: Use the `.cmd` wrappers, or run:
-  ```powershell
-  powershell -NoProfile -ExecutionPolicy Bypass -File .\Connect-Astral.ps1 -User YOUR_NETID
-  ```
 - **No token / lost token**:
   ```bash
   # On Astral (replace env if needed)
@@ -177,26 +167,6 @@ ssh -N -L 8890:as01.sciclone.wm.edu:8890 wm-astral
 - **Jupyter server**: `python -m jupyterlab.labapp --no-browser --ip=0.0.0.0 --port=<PORT> --ServerApp.port_retries=50`
 - **SSH tunnel (ProxyJump)**: `ssh -J <netid>@bastion.wm.edu -N -L <PORT>:<NODE>:<PORT> <netid>@astral.sciclone.wm.edu`
 
----
 
-## Appendix: Minimal `pyproject.toml` (optional but recommended)
-
-Put this in `/sciclone/scr10/$USER/myproj/pyproject.toml` to make your package discoverable:
-```toml
-[project]
-name = "myproj"
-version = "0.0.1"
-requires-python = ">=3.10"
-
-[build-system]
-requires = ["setuptools>=61"]
-build-backend = "setuptools.build_meta"
-
-[tool.setuptools.packages.find]
-where = ["src"]
-```
-Then run: `~/.conda/envs/wm-jupy/bin/python -m pip install -e /sciclone/scr10/$USER/myproj`
-
----
 
 **You’re set.** Start the launcher on Astral, open the tunnel locally, and work in Jupyter knowing everything runs on the cluster.
