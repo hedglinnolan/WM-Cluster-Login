@@ -1,0 +1,27 @@
+name: wm-jupy-gpu
+channels:
+  - pytorch
+  - nvidia
+  - conda-forge
+dependencies:
+  - python=3.12
+  - jupyterlab
+  - ipykernel
+  - ipywidgets
+  - numpy
+  - pandas
+  - scipy
+  - matplotlib
+  - scikit-learn
+  - seaborn
+  - statsmodels
+  - black
+  - isort
+  - pip
+  # PyTorch with CUDA 12.1 (runtime from NVIDIA channel)
+  - pytorch
+  - torchvision
+  - torchaudio
+  - pytorch-cuda=12.1
+  - pip:
+      - jupyterlab-code-formatter
